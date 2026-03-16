@@ -1,9 +1,8 @@
-// Import the framework and instantiate it
 import "dotenv/config";
 
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
-import fastifySwaggerUi from "@fastify/swagger-ui";
+import fastifyApiReference from "@scalar/fastify-api-reference";
 import Fastify from "fastify";
 import {
   jsonSchemaTransform,
@@ -26,16 +25,17 @@ await app.register(fastifySwagger, {
   openapi: {
     info: {
       title: "Bootcamp Treinos API",
-      description: "API para o Bootcamp Treinos",
+      description: "API para o bootcamp de treinos do FSC",
       version: "1.0.0",
     },
-    servers: [{ description: "Localhost", url: "http://localhost:8081" }],
+    servers: [
+      {
+        description: "Localhost",
+        url: "http://localhost:8081",
+      },
+    ],
   },
   transform: jsonSchemaTransform,
-});
-
-await app.register(fastifySwaggerUi, {
-  routePrefix: "/docs",
 });
 
 await app.register(fastifyCors, {
@@ -43,12 +43,41 @@ await app.register(fastifyCors, {
   credentials: true,
 });
 
+await app.register(fastifyApiReference, {
+  routePrefix: "/docs",
+  configuration: {
+    sources: [
+      {
+        title: "Bootcamp Treinos API",
+        slug: "bootcamp-treinos-api",
+        url: "/swagger.json",
+      },
+      {
+        title: "Auth API",
+        slug: "auth-api",
+        url: "/api/auth/open-api/generate-schema",
+      },
+    ],
+  },
+});
+
+app.withTypeProvider<ZodTypeProvider>().route({
+  method: "GET",
+  url: "/swagger.json",
+  schema: {
+    hide: true,
+  },
+  handler: async () => {
+    return app.swagger();
+  },
+});
+
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
   url: "/",
   schema: {
-    description: "Hello World",
-    tags: ["hello world"],
+    description: "Hello world",
+    tags: ["Hello World"],
     response: {
       200: z.object({
         message: z.string(),
@@ -56,7 +85,9 @@ app.withTypeProvider<ZodTypeProvider>().route({
     },
   },
   handler: () => {
-    return { message: "Hello World" };
+    return {
+      message: "Hello World",
+    };
   },
 });
 
@@ -95,9 +126,8 @@ app.route({
   },
 });
 
-// Run the server!
 try {
-  await app.listen({ port: Number(process.env.PORT ?? 8081) });
+  await app.listen({ port: Number(process.env.PORT) || 8081 });
 } catch (err) {
   app.log.error(err);
   process.exit(1);

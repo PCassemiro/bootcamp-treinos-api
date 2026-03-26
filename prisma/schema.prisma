@@ -58,6 +58,7 @@ model WorkoutDay {
   isRestDay     Boolean           @default(false)
   weekDay       WeekDay
   exercises     WorkoutExercise[]
+  estimatedTimeInSeconds Int
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
 }
@@ -70,7 +71,7 @@ model WorkoutExercise {
   workoutDay         WorkoutDay @relation(fields: [workoutDayId], references: [id])
   sets               Int
   reps               Int
-  restTimeIInSeconds Int
+  restTimeInSeconds Int
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 }

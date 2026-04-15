@@ -9,7 +9,8 @@ interface InputDto {
     name: string;
     weekDay: WeekDay;
     isRest: boolean;
-    estimatedTimeInSeconds: number;
+    estimatedDurationInSeconds: number;
+    coverImageUrl?: string;
     exercises: Array<{
       order: number;
       name: string;
@@ -19,12 +20,27 @@ interface InputDto {
     }>;
   }>;
 }
-// export interface OutputDto {
-//   id: string;
-// }
+export interface OutputDto {
+  id: string;
+  name: string;
+  workoutDays: Array<{
+    name: string;
+    weekDay: WeekDay;
+    isRest: boolean;
+    estimatedDurationInSeconds: number;
+    coverImageUrl?: string;
+    exercises: Array<{
+      order: number;
+      name: string;
+      sets: number;
+      reps: number;
+      restTimeInSeconds: number;
+    }>;
+  }>;
+}
 
 export class CreateWorkoutPlan {
-  async execute(dto: InputDto) {
+  async execute(dto: InputDto): Promise<OutputDto> {
     const existingWorkoutPlan = await prisma.workoutPlan.findFirst({
       where: {
         isActive: true,
@@ -53,7 +69,8 @@ export class CreateWorkoutPlan {
               name: workoutDays.name,
               weekDay: workoutDays.weekDay,
               isRestDay: workoutDays.isRest,
-              estimatedTimeInSeconds: workoutDays.estimatedTimeInSeconds,
+              estimatedDurationInSeconds: workoutDays.estimatedDurationInSeconds,
+              coverImageUrl: workoutDays.coverImageUrl,
               exercises: {
                 create: workoutDays.exercises.map((exercise) => ({
                   order: exercise.order,
@@ -90,7 +107,8 @@ export class CreateWorkoutPlan {
           name: workoutDay.name,
           weekDay: workoutDay.weekDay,
           isRest: workoutDay.isRestDay,
-          estimatedTimeInSeconds: workoutDay.estimatedTimeInSeconds,
+          estimatedDurationInSeconds: workoutDay.estimatedDurationInSeconds,
+          coverImageUrl: workoutDay.coverImageUrl ?? undefined,
           exercises: workoutDay.exercises.map((exercise) => ({
             order: exercise.order,
             name: exercise.name,

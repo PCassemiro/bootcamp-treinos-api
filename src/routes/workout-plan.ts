@@ -5,7 +5,10 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { NotFoundError } from "../errors/index.js";
 import { auth } from "../lib/auth.js";
 import { ErrorSchema, WorkoutPlanSchema } from "../schemas/index.js";
-import { CreateWorkoutPlan } from "../usecases/create-workout-plan.js";
+import {
+  CreateWorkoutPlan,
+  type OutputDto as CreateWorkoutPlanOutputDto,
+} from "../usecases/create-workout-plan.js";
 
 export const workoutPlanRoutes = async (app: FastifyInstance) => {
   app.withTypeProvider<ZodTypeProvider>().route({
@@ -34,7 +37,7 @@ export const workoutPlanRoutes = async (app: FastifyInstance) => {
         }
 
         const createWorkoutPlan = new CreateWorkoutPlan();
-        const result = await createWorkoutPlan.execute({
+        const result: CreateWorkoutPlanOutputDto = await createWorkoutPlan.execute({
           userId: session.user.id,
           name: request.body.name,
           workoutDays: request.body.workoutDays,

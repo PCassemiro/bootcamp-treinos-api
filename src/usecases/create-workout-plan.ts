@@ -57,22 +57,18 @@ export class CreateWorkoutPlan {
       const workoutPlan = await tx.workoutPlan.create({
         data: {
           id: crypto.randomUUID(),
-          isActive: true,
           name: dto.name,
-          user: {
-            connect: {
-              id: dto.userId,
-            },
-          },
+          userId: dto.userId,
+          isActive: true,
           workoutDays: {
-            create: dto.workoutDays.map((workoutDays) => ({
-              name: workoutDays.name,
-              weekDay: workoutDays.weekDay,
-              isRestDay: workoutDays.isRest,
-              estimatedDurationInSeconds: workoutDays.estimatedDurationInSeconds,
-              coverImageUrl: workoutDays.coverImageUrl,
+            create: dto.workoutDays.map((workoutDay) => ({
+              name: workoutDay.name,
+              weekDay: workoutDay.weekDay,
+              isRestDay: workoutDay.isRest,
+              estimatedDurationInSeconds: workoutDay.estimatedDurationInSeconds,
+              coverImageUrl: workoutDay.coverImageUrl ?? undefined,
               exercises: {
-                create: workoutDays.exercises.map((exercise) => ({
+                create: workoutDay.exercises.map((exercise) => ({
                   order: exercise.order,
                   name: exercise.name,
                   sets: exercise.sets,

@@ -7,6 +7,18 @@ export const ErrorSchema = z.object({
   code: z.string(),
 });
 
+export const UpdateWorkoutSessionBodySchema = z.object({
+  completedAt: z.string().refine((s) => !Number.isNaN(Date.parse(s)), {
+    message: "Must be a valid ISO 8601 datetime string",
+  }),
+});
+
+export const UpdateWorkoutSessionResponseSchema = z.object({
+  id: z.uuid(),
+  completedAt: z.string(),
+  startedAt: z.string(),
+});
+
 export const WorkoutPlanSchema = z.object({
   id: z.uuid(),
   name: z.string().trim().min(1),

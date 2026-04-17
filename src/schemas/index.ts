@@ -69,6 +69,38 @@ export const WorkoutPlanByIdResponseSchema = z.object({
   workoutDays: z.array(WorkoutPlanByIdDaySchema),
 });
 
+const yyyyMmDd = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Expected YYYY-MM-DD" });
+
+export const WorkoutExerciseDetailSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  order: z.number().int(),
+  workoutDayId: z.uuid(),
+  sets: z.number().int(),
+  reps: z.number().int(),
+  restTimeInSeconds: z.number().int(),
+});
+
+export const WorkoutPlanDaySessionSchema = z.object({
+  id: z.uuid(),
+  workoutDayId: z.uuid(),
+  startedAt: yyyyMmDd.optional(),
+  completedAt: yyyyMmDd.optional(),
+});
+
+export const WorkoutPlanDayDetailResponseSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  isRest: z.boolean(),
+  coverImageUrl: z.string().url().optional(),
+  estimatedDurationInSeconds: z.number().int(),
+  weekDay: z.enum(WeekDay),
+  exercises: z.array(WorkoutExerciseDetailSchema),
+  sessions: z.array(WorkoutPlanDaySessionSchema),
+});
+
 export const WorkoutPlanSchema = z.object({
   id: z.uuid(),
   name: z.string().trim().min(1),

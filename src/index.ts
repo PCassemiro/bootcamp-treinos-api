@@ -14,6 +14,7 @@ import z from "zod";
 
 import { auth } from "./lib/auth.js";
 import { homeRoutes } from "./routes/home.js";
+import { statsRoutes } from "./routes/stats.js";
 import { workoutPlanRoutes } from "./routes/workout-plan.js";
 import { workoutPlansRoutes } from "./routes/workout-plans.js";
 
@@ -69,6 +70,7 @@ await app.register(fastifyApiReference, {
 await app.register(workoutPlanRoutes, { prefix: "/api/workout-plan" });
 await app.register(workoutPlansRoutes, { prefix: "/api/workout-plans" });
 await app.register(homeRoutes, { prefix: "/api/home" });
+await app.register(statsRoutes, { prefix: "/api/stats" });
 
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",

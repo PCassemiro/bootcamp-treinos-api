@@ -50,7 +50,7 @@ export const HomeResponseSchema = z.object({
     exercisesCount: z.number().int(),
   }),
   workoutStreak: z.number().int(),
-  consistencyByDay: z.record(z.string(), HomeConsistencyDaySchema),
+  consistencyByDay: z.record(z.iso.date(), HomeConsistencyDaySchema),
 });
 
 export const WorkoutPlanByIdDaySchema = z.object({
@@ -99,6 +99,24 @@ export const WorkoutPlanDayDetailResponseSchema = z.object({
   weekDay: z.enum(WeekDay),
   exercises: z.array(WorkoutExerciseDetailSchema),
   sessions: z.array(WorkoutPlanDaySessionSchema),
+});
+
+export const StatsQuerySchema = z.object({
+  from: z.iso.date(),
+  to: z.iso.date(),
+});
+
+export const StatsConsistencyDaySchema = z.object({
+  workoutDayCompleted: z.boolean(),
+  workoutDayStarted: z.boolean(),
+});
+
+export const StatsResponseSchema = z.object({
+  workoutStreak: z.number().int(),
+  consistencyByDay: z.record(z.iso.date(), StatsConsistencyDaySchema),
+  completedWorkoutsCount: z.number().int(),
+  conclusionRate: z.number(),
+  totalTimeInSeconds: z.number().int(),
 });
 
 export const WorkoutPlanSchema = z.object({

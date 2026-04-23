@@ -147,6 +147,15 @@ export const ListWorkoutPlansResponseSchema = z.object({
   ),
 });
 
+export const UserTrainDataResponseSchema = z.object({
+  userId: z.string(),
+  userName: z.string(),
+  weightInGrams: z.number().int(),
+  heightInCentimeters: z.number().int(),
+  age: z.number().int(),
+  bodyFatPercentage: z.number().min(1).max(100),
+});
+
 export const WorkoutPlanSchema = z.object({
   id: z.uuid(),
   name: z.string().trim().min(1),

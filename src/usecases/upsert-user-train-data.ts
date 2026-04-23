@@ -1,0 +1,56 @@
+import { NotFoundError } from "../errors/index.js";
+import { prisma } from "../lib/db.js";
+
+interface InputDto {
+  userId: string;
+  weightInGrams: number;
+  heightInCentimeters: number;
+  age: number;
+  bodyFatPercentage: number;
+}
+
+export interface OutputDto {
+  userId: string;
+  weightInGrams: number;
+  heightInCentimeters: number;
+  age: number;
+  bodyFatPercentage: number;
+}
+
+export class UpsertUserTrainData {
+  async execute(dto: InputDto): Promise<OutputDto> {
+    const user = await prisma.user.findUnique({
+      where: { id: dto.userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: dto.userId },
+      data: {
+        weightInGrams: dto.weightInGrams,
+        heightInCentimeters: dto.heightInCentimeters,
+        age: dto.age,
+        bodyFatPercentage: dto.bodyFatPercentage,
+      },
+      select: {
+        id: true,
+        weightInGrams: true,
+        heightInCentimeters: true,
+        age: true,
+        bodyFatPercentage: true,
+      },
+    });
+
+    return {
+      userId: updated.id,
+      weightInGrams: updated.weightInGrams!,
+      heightInCentimeters: updated.heightInCentimeters!,
+      age: updated.age!,
+      bodyFatPercentage: updated.bodyFatPercentage!,
+    };
+  }
+}

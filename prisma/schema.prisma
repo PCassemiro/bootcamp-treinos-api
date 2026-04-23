@@ -14,16 +14,20 @@ datasource db {
 }
 
 model User {
-  id            String        @id
-  workoutPlans  workoutPlan[]
-  name          String
-  email         String
-  emailVerified Boolean       @default(false)
-  image         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                  String        @id
+  workoutPlans        workoutPlan[]
+  name                String
+  email               String
+  emailVerified       Boolean       @default(false)
+  image               String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  sessions            Session[]
+  accounts            Account[]
+  weightInGrams       Int?
+  heightInCentimeters Int?
+  age                 Int?
+  bodyFatPercentage   Int? // 100 representa 100% 
 
   @@unique([email])
   @@map("user")
@@ -51,18 +55,18 @@ enum WeekDay {
 }
 
 model WorkoutDay {
-  id                     String            @id @default(uuid())
-  name                   String
-  workoutPlanId          String
-  workoutPlan            workoutPlan       @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
-  isRestDay              Boolean           @default(false)
-  weekDay                WeekDay
-  exercises              WorkoutExercise[]
+  id                         String            @id @default(uuid())
+  name                       String
+  workoutPlanId              String
+  workoutPlan                workoutPlan       @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  isRestDay                  Boolean           @default(false)
+  weekDay                    WeekDay
+  exercises                  WorkoutExercise[]
   estimatedDurationInSeconds Int
-  coverImageUrl          String?
-  createdAt              DateTime          @default(now()) @db.Timestamptz
-  updatedAt              DateTime          @updatedAt @db.Timestamptz
-  sessions               WorkoutSession[]
+  coverImageUrl              String?
+  createdAt                  DateTime          @default(now()) @db.Timestamptz
+  updatedAt                  DateTime          @updatedAt @db.Timestamptz
+  sessions                   WorkoutSession[]
 }
 
 model WorkoutExercise {
